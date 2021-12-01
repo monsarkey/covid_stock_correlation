@@ -1,0 +1,47 @@
+---
+title: "The Effect of Covid on Different Industries (STAT400)"
+author: "Sean Markey (116035729), "
+output:
+  html_document:
+    number_sections: yes
+    toc: yes  
+  pdf_document:
+    toc: yes
+---
+# Simple COVID Data Exploration
+
+This notebook is intended to be a simple notebook that utilizes the COVID 19 dataset. Hopefully this notebook helps clarify some of the code in this notebook with comments and latex/markdown cells. 
+
+```{r message=TRUE, warning=TRUE, include=FALSE}
+library(dplyr)
+library(ggplot2)
+library(tidyverse)
+library(janitor)
+library(gganimate)
+library(gifski)
+library(png)
+library(ggrepel)
+library(scales)
+library(gapminder)
+# library(shinyWidgets)
+library(data.table)
+```
+
+## Reading The Data
+
+To read the data we need to provide the paths to the csv files that we will use. Specifically, we want:
+
+* US Deaths Over Time - time_series_covid19_deaths_US.csv
+* US Confirmed Cases Over Time - time_series_covid19_confirmed_US.csv
+
+The paths below are relative; the "./" translates to current directory so if you are running this code you would want your file structure to look like this
+
+* parent_dir
+  * JHU_Covid_Simple.rmd
+  * Covid_Stat400 Directory
+    * COVID-19-master_Nov3
+      * csse_covid_19_data
+        * csse_covid_19_time_series
+          * the csv files are here
+
+
