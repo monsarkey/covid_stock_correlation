@@ -48,9 +48,9 @@ Note: Some of the lines below that display dataframes have been commented to mak
 
 ```{r}
 path_US_Death <- "./COVID-19-master_Nov3/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_US.csv"
-path_US_confirmed <- "./COVID-19-master_Nov3/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_US.csv"
+path_US_confirmed <- "./data/time_series_covid19_confirmed_US.csv"
 
-deaths <- read.csv(path_US_Death) #Reads in Deaths Over Time csv
+#deaths <- read.csv(path_US_Death) #Reads in Deaths Over Time csv
 cases <- read.csv(path_US_confirmed) #Reads in Cases Over Time csv
 
 #The lines below have been commented to make the output knit friendly
@@ -69,7 +69,7 @@ Let's first filter the data to only include the relevant columns. The select com
 cases = cases %>% select("Province_State" | starts_with("X"))
 #head(cases) #uncomment to see dataframe in RStudio
 
-deaths = deaths %>% select("Province_State" | starts_with("X"))
+# = deaths %>% select("Province_State" | starts_with("X"))
 #head(deaths) #uncomment to see dataframe in RStudio
 ```
 
@@ -83,8 +83,8 @@ The group_by function groups a dataframe by a specific variable (in our case Pro
 cases = cases %>% group_by(Province_State) %>% summarise(across(starts_with("X"), sum))
 head(cases) #uncomment to see dataframe in RStudio
 
-deaths = deaths %>% group_by(Province_State) %>% summarise(across(starts_with("X"), sum))
-head(deaths) #uncomment to see dataframe in RStudio
+#deaths = deaths %>% group_by(Province_State) %>% summarise(across(starts_with("X"), sum))
+#head(deaths) #uncomment to see dataframe in RStudio
 ```
 
 ### Melt Columns
@@ -98,9 +98,9 @@ setDT(cases)
 cases = cases %>% melt(cases, id=c("Province_State"), measure=patterns("^X"), value.name="Cases", variable.name="Date")
 head(cases)
 
-setDT(deaths)
-deaths = deaths %>% melt(deaths, id=c("Province_State"), measure=patterns("^X"), value.name="Deaths", variable.name="Date")
-head(deaths)
+#setDT(deaths)
+#deaths = deaths %>% melt(deaths, id=c("Province_State"), measure=patterns("^X"), value.name="Deaths", variable.name="Date")
+#head(deaths)
 ```
 
 ### Convert Dates
@@ -111,8 +111,8 @@ Let's take one final step to clean our data. All of the dates are represented as
 cases$Date = as.Date(cases$Date, format="X%m.%d.%y")
 head(cases)
 
-deaths$Date = as.Date(deaths$Date, format="X%m.%d.%y")
-head(deaths)
+#deaths$Date = as.Date(deaths$Date, format="X%m.%d.%y")
+#head(deaths)
 ```
 
 ### Merging Two Tables
@@ -122,7 +122,7 @@ We want to merge our two tables of deaths and cases so that they show up on a si
 The merge command takes our two dataframes as inputs and the "by" argument specifies what columns we are joining on.
 
 ```{R}
-covid <- merge(cases, deaths, by=c("Province_State", "Date"))
+covid <- cases
 head(covid)
 ```
 

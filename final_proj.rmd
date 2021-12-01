@@ -31,17 +31,64 @@ library(data.table)
 
 To read the data we need to provide the paths to the csv files that we will use. Specifically, we want:
 
-* US Deaths Over Time - time_series_covid19_deaths_US.csv
 * US Confirmed Cases Over Time - time_series_covid19_confirmed_US.csv
 
 The paths below are relative; the "./" translates to current directory so if you are running this code you would want your file structure to look like this
 
 * parent_dir
-  * JHU_Covid_Simple.rmd
-  * Covid_Stat400 Directory
-    * COVID-19-master_Nov3
-      * csse_covid_19_data
-        * csse_covid_19_time_series
-          * the csv files are here
+  * final_proj.rmd
+  * data Directory
+    * time_series_covid19_confirmed_US.csv
+    
+```{r}
+path_US_confirmed <- "./data/time_series_covid19_confirmed_US.csv"
 
+cases <- read.csv(path_US_confirmed)
+head(cases)
+```
+### Filter Columns
+Let's first filter the data to only include the relevant columns. The select command allows us to filter on select columns. Let's make a simplifying assumption that we are only concerned with data per state over time. For this we would need only the Province_State column and columns that start with the letter X (for dates).
+
+```{R}
+cases = cases %>% select("Province_State" | starts_with("X"))
+head(cases)
+
+```
+
+### Group By State
+
+Now that we have dropped all unnecessary features, the next issue is that we have multiple rows for each state. It makes sense that we should group these rows together based on Province_State and sum the values in each cell.
+
+The group_by function groups a dataframe by a specific variable (in our case Province_State) and the summarize function aggregates all columns starting with an X.
+
+```{r}
+cases = cases %>% group_by(Province_State) %>% summarise(across(starts_with("X"), sum))
+head(cases) #uncomment to see dataframe in RStudio
+
+```
+
+### Melt Columns
+
+The next step is to melt the columns for date. A good dataset shouldn't have a column for each date. It makes more sense for us to have a row for each state and date combination. The process of taking multiple columns and converting it into two columns (one for the column name and the other for the value) is called melting. 
+
+Let's do this with the data that we have by using the melt command from the data.table library. The id is the variable we intend to keep (Province State), measure is the columns we want to melt (anything that starts with X), value is the name of the data in the table (Cases/Deaths) and variable is the name of what the column headers represent (Dates).
+
+```{r}
+case_delta <- cases
+
+for(i in 2:ncol(cases)) {       # for-loop over columns
+  if(i > 3) {
+    
+    case_delta[ , i] = abs((cases[ , i] - cases[ , i-1]))
+    
+  }
+}
+
+head(case_delta)
+
+```
+
+```{r}
+
+```
 
