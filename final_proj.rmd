@@ -77,6 +77,7 @@ Let's do this with the data that we have by using the melt command from the data
 case_delta <- cases
 
 for(i in 2:ncol(cases)) {       # for-loop over columns
+  
   if(i > 3) {
     
     case_delta[ , i] = abs((cases[ , i] - cases[ , i-1]))
@@ -89,6 +90,23 @@ head(case_delta)
 ```
 
 ```{r}
+case_delta <- colSums(case_delta[,-1])
 
+cases_vec <- as.numeric(case_delta)
+cases_vec[1:100]
 ```
 
+```{r}
+dates = names(case_delta)
+dates = as.Date(dates, format="X%m.%d.%y")
+
+head(dates)
+```
+
+
+```{r}
+plot(dates, cases_vec, xlab="Time", ylab="Daily Confirmed Cases")
+title("Daily Confirmed Covid Cases from 2020 to 2022")
+```
+
+Now that we have our Covid cases over time correctly charted, we must get some stock data to compare such that we can draw comparisons between daily cases and the values of certain stocks. 
