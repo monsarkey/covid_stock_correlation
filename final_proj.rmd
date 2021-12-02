@@ -10,17 +10,22 @@ output:
 ---
 # Introduction to a simple COVID data exploration based on different industries 
 
-This notebook specifically is designed to be a simple notebook that emphasizes and explains by the utilization of the COVID 19 datset on the different sectors/industries on the changes the specific industries/sectors went through specifically focusing on transportation, technology, health care, vaccines, mail being affected/and or unaffected by COVID 19 and COVID 19 related economic issues:
+This notebook specifically is designed to be a simple notebook that emphasizes and explains by the 
+utilization of the COVID 19 datset on the different sectors/industries on the changes the specific 
+industries/sectors went through specifically focusing on transportation, technology, health care, 
+vaccines, mail being affected/and or unaffected by COVID 19 and COVID 19 related economic issues:
 
 # Historical data for specific sectors and industries:
 (https://www.nasdaq.com/market-activity/quotes/historical)
 
-# Specific industries/sectors: Transportation (XLN), Health Care (XLV), Vaccines (Pfizer, Moderna, J & J), Consumer Products (XLP), Technology (XLK)
+# Specific industries/sectors: Transportation (XLN), Health Care (XLV), Vaccines (Pfizer, Moderna, J & J), 
+# Consumer Products (XLP), Technology (XLK)
 https://www.investopedia.com/insights/introduction-to-stock-market-indices/
 
-
-This notebook will also introduce the dataset of COVID 19 data exploration on of the statistics of daily time series summary tables which includes the confirmed people having COVID 19, deaths from COVID 19, and people being recovered showing recovery from COVID 19 details.
-#COVID-19 US time series dataset:
+This notebook will also introduce the dataset of COVID 19 data exploration on of the statistics of daily time 
+series summary tables which includes the confirmed people having COVID 19, deaths from COVID 19, and people being 
+recovered showing recovery from COVID 19 details.
+# COVID-19 US time series dataset:
 (https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_time_series) 
 
 
