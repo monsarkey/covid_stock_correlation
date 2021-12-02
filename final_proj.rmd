@@ -1,6 +1,6 @@
 ---
 title: "The Effect of Covid on Different Industries (STAT400)"
-author: "Sean Markey (116035729), "
+author: "Sean Markey (116035729), Herman Mann (118420943) "
 output:
   html_document:
     number_sections: yes
