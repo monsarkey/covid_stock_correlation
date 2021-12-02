@@ -8,23 +8,10 @@ output:
   pdf_document:
     toc: yes
 ---
-# Simple COVID Data Exploration
-
-This notebook is intended to be a simple notebook that utilizes the COVID 19 dataset. Hopefully this notebook helps clarify some of the code in this notebook with comments and latex/markdown cells. 
 
 ```{r message=TRUE, warning=TRUE, include=FALSE}
 library(dplyr)
 library(ggplot2)
-library(tidyverse)
-library(janitor)
-library(gganimate)
-library(gifski)
-library(png)
-library(ggrepel)
-library(scales)
-library(gapminder)
-# library(shinyWidgets)
-library(data.table)
 ```
 
 ## Reading The Data
@@ -67,20 +54,17 @@ head(cases) #uncomment to see dataframe in RStudio
 
 ```
 
-### Melt Columns
+### Convert from running sum
 
-The next step is to melt the columns for date. A good dataset shouldn't have a column for each date. It makes more sense for us to have a row for each state and date combination. The process of taking multiple columns and converting it into two columns (one for the column name and the other for the value) is called melting. 
-
-Let's do this with the data that we have by using the melt command from the data.table library. The id is the variable we intend to keep (Province State), measure is the columns we want to melt (anything that starts with X), value is the name of the data in the table (Cases/Deaths) and variable is the name of what the column headers represent (Dates).
+The original data set provides a running sum of confirmed Covid cases in the US, i.e. it counts the total number of confirmed Covid cases up until the date recorded. I thought we would get better analysis by viewing the daily amount of recorded Covid cases for each day, which gives us a better idea of when Covid was at its worst.
 
 ```{r}
 case_delta <- cases
 
 for(i in 2:ncol(cases)) {       # for-loop over columns
+  
   if(i > 3) {
-    
     case_delta[ , i] = abs((cases[ , i] - cases[ , i-1]))
-    
   }
 }
 
@@ -88,7 +72,195 @@ head(case_delta)
 
 ```
 
+
+Here, we take the sum of cases over each state so we have a total number of cases in the US for easier analysis.
+
 ```{r}
+case_delta <- colSums(case_delta[,-1])
+
+cases_vec <- as.numeric(case_delta)
+cases_vec[1:100]
+```
+
+Now we convert the character strings of dates provided into Date objects such that they can by manipulated mathematically later.
+
+```{r}
+dates = names(case_delta)
+dates = as.Date(dates, format="X%m.%d.%y")
+
+head(dates)
+```
+
+We now have a decent plot for daily confirmed cases over the past two years.
+
+```{r}
+plot(dates, cases_vec, xlab="Time", ylab="Daily Confirmed Cases")
+title("Daily Confirmed Covid Cases from 2020 to 2022")
+```
+
+Now that we have our Covid cases over time correctly charted, we must get some stock data to compare such that we can draw comparisons between daily cases and the values of certain stocks. 
+
+## Reading The Data
+
+To read the data we need to provide the paths to the csv files that we will use. Specifically, we want:
+
+* Johnson & Johnson Stock Prices - historical_JNJ.csv
+* Moderna Stock Prices - historical_MRNA.csv
+* Pfizer Stock Prices - historical_PFE.csv
+* Energy Select Sector Stock Prices - historical_XLE.csv
+* Technology Select Sector Stock Prices - historical_XLK.csv
+* Consumer Product Select Sector Stock Prices - historical_XLP.csv
+* Health Care Select Sector Stock Prices - historical_XLK.csv
+
+The paths below are relative; the "./" translates to current directory so if you are running this code you would want your file structure to look like this
+
+* parent_dir
+  * final_proj.rmd
+  * data Directory
+    * historical_JNJ.csv
+    * historical_MRNA.csv
+    * historical_PFE.csv
+    * historical_XLE.csv
+    * historical_XLK.csv
+    * historical_XLP.csv
+    * historical_XLV.csv
+    
+```{r}
+path_jnj <- "./data/historical_JNJ.csv"
+path_moderna <- "./data/historical_MRNA.csv"
+path_pfizer <- "./data/historical_PFE.csv"
+path_energy <- "./data/historical_XLE.csv"
+path_tech <- "./data/historical_XLK.csv"
+path_consumer <- "./data/historical_XLP.csv"
+path_health <- "./data/historical_XLV.csv"
+
+jnj <- read.csv(path_jnj)
+moderna <- read.csv(path_moderna)
+pfizer <- read.csv(path_pfizer)
+energy <- read.csv(path_energy)
+tech <- read.csv(path_tech)
+consumer <- read.csv(path_consumer)
+health <- read.csv(path_health)
+
+head(health)
+```
+
+Here, we take the two important columns from our dataframe for analysis, being the date of the data point, and the opening stock price associated with that date.
+
+```{r}
+jnj = jnj %>% select("Date" | "Open")
+jnj$Open <- parse_number(jnj$Open)
+
+moderna = moderna %>% select("Date" | "Open")
+moderna$Open <- parse_number(moderna$Open)
+
+pfizer = pfizer %>% select("Date" | "Open")
+pfizer$Open <- parse_number(pfizer$Open)
+
+energy = energy %>% select("Date" | "Open")
+tech = tech %>% select("Date" | "Open")
+consumer = consumer %>% select("Date" | "Open")
+health = health %>% select("Date" | "Open")
+
+health
+```
+
+Here, we convert our date strings inside of these dataframes into Date objects.
+
+```{r}
+jnj$Date <- as.Date(jnj$Date, format="%m/%d/%Y")
+moderna$Date <- as.Date(moderna$Date, format="%m/%d/%Y")
+pfizer$Date <- as.Date(pfizer$Date, format="%m/%d/%Y")
+energy$Date <- as.Date(energy$Date, format="%m/%d/%Y")
+tech$Date <- as.Date(tech$Date, format="%m/%d/%Y")
+consumer$Date <- as.Date(consumer$Date, format="%m/%d/%Y")
+health$Date <- as.Date(health$Date, format="%m/%d/%Y")
+
+health
+```
+
+Now, we trim the data frames to only contain dates that are within the range of dates we are looking at for our Covid data.
+
+```{r}
+jnj = jnj %>% filter(jnj$Date %in% dates)
+moderna = moderna %>% filter(moderna$Date %in% dates)
+pfizer = pfizer %>% filter(pfizer$Date %in% dates)
+energy = energy %>% filter(energy$Date %in% dates)
+tech = tech %>% filter(tech$Date %in% dates)
+consumer = consumer %>% filter(consumer$Date %in% dates)
+health = health %>% filter(health$Date %in% dates)
+
+health
+```
+
+## Plotting our data
+
+
+Finally, we plot all the data we've acquired so far together.
+
+We choose first to compare the stock prices of the three major vaccine companies throughout the course of Covid. We do this by plotting them together on the same graph with our confirmed cases data.
+
+```{r}
+plot(dates, cases_vec, xlab="Time", ylab="Daily Confirmed Cases", pch=16)
+par(new=T)
+plot(pfizer$Date, pfizer$Open, type='l', col='red3', axes=F, xlab=NA, ylab=NA)
+mtext(side=4, line=2, text='Opening Stock Price ($USD)')
+par(new=T)
+plot(jnj$Date, jnj$Open, type='l', col='green1', axes=F, xlab=NA, ylab=NA)
+par(new=T)
+plot(moderna$Date, moderna$Open, type='l', col='blue1', axes=F, xlab=NA, ylab=NA)
+axis(side=4)
+legend("topleft", 
+          legend=c("Daily Confirmed Cases", "Pfizer", "Johnson & Johnson", "Moderna"), 
+          col=c("black", "red3", "green1", "blue1"), lty=c(0,1,1,1), pch=c(16, NA, NA, NA))
+title("Vaccine Company Stock Prices (USD) and Confirmed Cases 2020-2022")
 
 ```
 
+```{r}
+plot(dates, cases_vec, xlab="Time", ylab="Daily Confirmed Cases", pch=16)
+par(new=T)
+plot(energy$Date, energy$Open, type='l', col='red3', axes=F, xlab=NA, ylab=NA)
+mtext(side=4, line=2, text='Opening Stock Price ($USD)')
+axis(side=4)
+legend("topleft", 
+          legend=c("Daily Confirmed Cases", "Energy Sector"), 
+          col=c("black", "red3"), lty=c(0,1), pch=c(16, NA))
+title("Energy Sector Stock Prices (USD) and Confirmed Cases 2020-2022")
+```
+```{r}
+plot(dates, cases_vec, xlab="Time", ylab="Daily Confirmed Cases", pch=16)
+par(new=T)
+plot(tech$Date, tech$Open, type='l', col='red3', axes=F, xlab=NA, ylab=NA)
+mtext(side=4, line=2, text='Opening Stock Price ($USD)')
+axis(side=4)
+legend("topleft", 
+          legend=c("Daily Confirmed Cases", "Tech Sector"), 
+          col=c("black", "red3"), lty=c(0,1), pch=c(16, NA))
+title("Tech Sector Stock Prices (USD) and Confirmed Cases 2020-2022")
+```
+```{r}
+plot(dates, cases_vec, xlab="Time", ylab="Daily Confirmed Cases", pch=16)
+par(new=T)
+plot(consumer$Date, consumer$Open, type='l', col='red3', axes=F, xlab=NA, ylab=NA)
+mtext(side=4, line=2, text='Opening Stock Price ($USD)')
+axis(side=4)
+legend("topleft", 
+          legend=c("Daily Confirmed Cases", "Consumer Staple Sector"), 
+          col=c("black", "red3"), lty=c(0,1), pch=c(16, NA))
+title("Consumer Stape Stock Prices (USD) and Confirmed Cases 2020-2022")
+```
+```{r}
+plot(dates, cases_vec, xlab="Time", ylab="Daily Confirmed Cases", pch=16)
+par(new=T)
+plot(health$Date, health$Open, type='l', col='red3', axes=F, xlab=NA, ylab=NA)
+mtext(side=4, line=2, text='Opening Stock Price ($USD)')
+axis(side=4)
+legend("topleft", 
+          legend=c("Daily Confirmed Cases", "Health Sector"), 
+          col=c("black", "red3"), lty=c(0,1), pch=c(16, NA))
+title("Health Sector Stock Prices (USD) and Confirmed Cases 2020-2022")
+```
+
+## I Think this is all the visualization we need to do- you can just go in and analyze these charts, let me know if you have questions
+  -Sean
