@@ -32,6 +32,7 @@ recovered showing recovery from COVID 19 details.
 ```{r message=TRUE, warning=TRUE, include=FALSE}
 library(dplyr)
 library(ggplot2)
+library(tidyverse)
 ```
 
 ## Reading The Data
@@ -202,6 +203,14 @@ health
 Now, we trim the data frames to only contain dates that are within the range of dates we are looking at for our Covid data.
 
 ```{r}
+Cases <- c(cases_vec)
+Date <- c(dates)
+
+df <- data.frame(Date, Cases)
+print(df)
+```
+
+```{r}
 jnj = jnj %>% filter(jnj$Date %in% dates)
 moderna = moderna %>% filter(moderna$Date %in% dates)
 pfizer = pfizer %>% filter(pfizer$Date %in% dates)
@@ -209,8 +218,9 @@ energy = energy %>% filter(energy$Date %in% dates)
 tech = tech %>% filter(tech$Date %in% dates)
 consumer = consumer %>% filter(consumer$Date %in% dates)
 health = health %>% filter(health$Date %in% dates)
-
-health
+df = df %>% filter(df$Date %in% energy$Date)
+df = df %>% arrange(desc(df$Date))
+print(df)
 ```
 
 ## Plotting our data
@@ -218,10 +228,16 @@ health
 
 Finally, we plot all the data we've acquired so far together.
 
+```{r}
+plot(df$Date, df$Cases, xlab="Time", ylab="Daily Confirmed Cases")
+title("Daily Confirmed Covid Cases from 2020 to 2022")
+```
+Before we start, here is the adjusted COVID case plot over time matched with the associated stock price dates (this is because stocks opening prices are measured only 5 days a week).
+
 We choose first to compare the stock prices of the three major vaccine companies throughout the course of Covid. We do this by plotting them together on the same graph with our confirmed cases data.
 
 ```{r}
-plot(dates, cases_vec, xlab="Time", ylab="Daily Confirmed Cases", pch=16)
+plot(df$Date, df$Cases, xlab="Time", ylab="Daily Confirmed Cases", pch=16)
 par(new=T)
 plot(pfizer$Date, pfizer$Open, type='l', col='red3', axes=F, xlab=NA, ylab=NA)
 mtext(side=4, line=2, text='Opening Stock Price ($USD)')
@@ -238,7 +254,7 @@ title("Vaccine Company Stock Prices (USD) and Confirmed Cases 2020-2022")
 ```
 
 ```{r}
-plot(dates, cases_vec, xlab="Time", ylab="Daily Confirmed Cases", pch=16)
+plot(df$Date, df$Cases, xlab="Time", ylab="Daily Confirmed Cases", pch=16)
 par(new=T)
 plot(energy$Date, energy$Open, type='l', col='red3', axes=F, xlab=NA, ylab=NA)
 mtext(side=4, line=2, text='Opening Stock Price ($USD)')
@@ -249,7 +265,7 @@ legend("topleft",
 title("Energy Sector Stock Prices (USD) and Confirmed Cases 2020-2022")
 ```
 ```{r}
-plot(dates, cases_vec, xlab="Time", ylab="Daily Confirmed Cases", pch=16)
+plot(df$Date, df$Cases, xlab="Time", ylab="Daily Confirmed Cases", pch=16)
 par(new=T)
 plot(tech$Date, tech$Open, type='l', col='red3', axes=F, xlab=NA, ylab=NA)
 mtext(side=4, line=2, text='Opening Stock Price ($USD)')
@@ -260,7 +276,7 @@ legend("topleft",
 title("Tech Sector Stock Prices (USD) and Confirmed Cases 2020-2022")
 ```
 ```{r}
-plot(dates, cases_vec, xlab="Time", ylab="Daily Confirmed Cases", pch=16)
+plot(df$Date, df$Cases, xlab="Time", ylab="Daily Confirmed Cases", pch=16)
 par(new=T)
 plot(consumer$Date, consumer$Open, type='l', col='red3', axes=F, xlab=NA, ylab=NA)
 mtext(side=4, line=2, text='Opening Stock Price ($USD)')
@@ -268,10 +284,10 @@ axis(side=4)
 legend("topleft", 
           legend=c("Daily Confirmed Cases", "Consumer Staple Sector"), 
           col=c("black", "red3"), lty=c(0,1), pch=c(16, NA))
-title("Consumer Stape Stock Prices (USD) and Confirmed Cases 2020-2022")
+title("Consumer Staple Stock Prices (USD) and Confirmed Cases 2020-2022")
 ```
 ```{r}
-plot(dates, cases_vec, xlab="Time", ylab="Daily Confirmed Cases", pch=16)
+plot(df$Date, df$Cases, xlab="Time", ylab="Daily Confirmed Cases", pch=16)
 par(new=T)
 plot(health$Date, health$Open, type='l', col='red3', axes=F, xlab=NA, ylab=NA)
 mtext(side=4, line=2, text='Opening Stock Price ($USD)')
@@ -282,5 +298,60 @@ legend("topleft",
 title("Health Sector Stock Prices (USD) and Confirmed Cases 2020-2022")
 ```
 
-## I Think this is all the visualization we need to do- you can just go in and analyze these charts, let me know if you have questions
-  -Sean
+```{r}
+cor(df$Cases, consumer$Open)
+cor(df$Cases, energy$Open)
+cor(df$Cases, health$Open)
+cor(df$Cases, tech$Open)
+cor(df$Cases, jnj$Open)
+cor(df$Cases, moderna$Open)
+cor(df$Cases, pfizer$Open)
+```
+We take correlation coefficients to measure the degree of association between two variables, in this case, COVID cases and its effect on a given sector or vaccine company.
+
+According to the results, it appears that the energy sector has incredibly weak association with COVID cases, which
+means that it has practically no correlation. Besides this sector, the other sectors and the vaccines have a somewhat moderate positive correlation to COVID cases over time. In particular, it appears that Johnson&Johnson have the weakest correlation out of the three vaccine types, while Moderna is the strongest, though not by a drastic difference.
+
+Below are plots that represent these associations, in visual form.
+
+```{r}
+plot(df$Cases, consumer$Open, xlab="COVID Cases", ylab="Consumer Staple Sector Stock Prices", pch=16)
+abline(lm(consumer$Open~df$Cases), col = 'red')
+title("COVID Cases on Consumer Staple Sector Stock Prices")
+```
+
+```{r}
+plot(df$Cases, energy$Open, xlab="COVID Cases", ylab="Energy Sector Stock Prices", pch=16)
+abline(lm(energy$Open~df$Cases), col = 'red')
+title("COVID Cases on Energy Sector Stock Prices")
+```
+
+```{r}
+plot(df$Cases, health$Open, xlab="COVID Cases", ylab="Health Sector Stock Prices", pch=16)
+abline(lm(health$Open~df$Cases), col = 'red')
+title("COVID Cases on Health Sector Stock Prices")
+```
+
+```{r}
+plot(df$Cases, tech$Open, xlab="COVID Cases", ylab="Tech Sector Stock Prices", pch=16)
+abline(lm(tech$Open~df$Cases), col = 'red')
+title("COVID Cases on Tech Sector Stock Prices")
+```
+
+```{r}
+plot(df$Cases, jnj$Open, xlab="COVID Cases", ylab="Johnson&Johnson Stock Prices", pch=16)
+abline(lm(jnj$Open~df$Cases), col = 'red')
+title("COVID Cases on Johnson&Johnson Stock Prices")
+```
+
+```{r}
+plot(df$Cases, moderna$Open, xlab="COVID Cases", ylab="Moderna Stock Prices", pch=16)
+abline(lm(moderna$Open~df$Cases), col = 'red')
+title("COVID Cases on Moderna Stock Prices")
+```
+
+```{r}
+plot(df$Cases, pfizer$Open, xlab="COVID Cases", ylab="Pfizer Stock Prices", pch=16)
+abline(lm(pfizer$Open~df$Cases), col = 'red')
+title("COVID Cases on Pfizer Stock Prices")
+```
