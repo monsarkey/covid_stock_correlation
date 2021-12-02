@@ -201,8 +201,61 @@ health
 plot(dates, cases_vec, xlab="Time", ylab="Daily Confirmed Cases", pch=16)
 par(new=T)
 plot(pfizer$Date, pfizer$Open, type='l', col='red3', axes=F, xlab=NA, ylab=NA)
+mtext(side=4, line=2, text='Opening Stock Price ($USD)')
 par(new=T)
 plot(jnj$Date, jnj$Open, type='l', col='green1', axes=F, xlab=NA, ylab=NA)
+par(new=T)
+plot(moderna$Date, moderna$Open, type='l', col='blue1', axes=F, xlab=NA, ylab=NA)
 axis(side=4)
+legend("topleft", 
+          legend=c("Daily Confirmed Cases", "Pfizer", "Johnson & Johnson", "Moderna"), 
+          col=c("black", "red3", "green1", "blue1"), lty=c(0,1,1,1), pch=c(16, NA, NA, NA))
+title("Vaccine Company Stock Prices (USD) and Confirmed Cases 2020-2022")
+
+```
+
+```{r}
+plot(dates, cases_vec, xlab="Time", ylab="Daily Confirmed Cases", pch=16)
+par(new=T)
+plot(energy$Date, energy$Open, type='l', col='red3', axes=F, xlab=NA, ylab=NA)
+mtext(side=4, line=2, text='Opening Stock Price ($USD)')
+axis(side=4)
+legend("topleft", 
+          legend=c("Daily Confirmed Cases", "Energy Sector"), 
+          col=c("black", "red3"), lty=c(0,1), pch=c(16, NA))
+title("Energy Sector Stock Prices (USD) and Confirmed Cases 2020-2022")
+```
+```{r}
+plot(dates, cases_vec, xlab="Time", ylab="Daily Confirmed Cases", pch=16)
+par(new=T)
+plot(tech$Date, tech$Open, type='l', col='red3', axes=F, xlab=NA, ylab=NA)
+mtext(side=4, line=2, text='Opening Stock Price ($USD)')
+axis(side=4)
+legend("topleft", 
+          legend=c("Daily Confirmed Cases", "Tech Sector"), 
+          col=c("black", "red3"), lty=c(0,1), pch=c(16, NA))
+title("Tech Sector Stock Prices (USD) and Confirmed Cases 2020-2022")
+```
+```{r}
+plot(dates, cases_vec, xlab="Time", ylab="Daily Confirmed Cases", pch=16)
+par(new=T)
+plot(consumer$Date, consumer$Open, type='l', col='red3', axes=F, xlab=NA, ylab=NA)
+mtext(side=4, line=2, text='Opening Stock Price ($USD)')
+axis(side=4)
+legend("topleft", 
+          legend=c("Daily Confirmed Cases", "Consumer Staple Sector"), 
+          col=c("black", "red3"), lty=c(0,1), pch=c(16, NA))
+title("Consumer Stape Stock Prices (USD) and Confirmed Cases 2020-2022")
+```
+```{r}
+plot(dates, cases_vec, xlab="Time", ylab="Daily Confirmed Cases", pch=16)
+par(new=T)
+plot(health$Date, health$Open, type='l', col='red3', axes=F, xlab=NA, ylab=NA)
+mtext(side=4, line=2, text='Opening Stock Price ($USD)')
+axis(side=4)
+legend("topleft", 
+          legend=c("Daily Confirmed Cases", "Health Sector"), 
+          col=c("black", "red3"), lty=c(0,1), pch=c(16, NA))
+title("Health Sector Stock Prices (USD) and Confirmed Cases 2020-2022")
 ```
 
