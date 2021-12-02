@@ -8,23 +8,10 @@ output:
   pdf_document:
     toc: yes
 ---
-# Simple COVID Data Exploration
-
-This notebook is intended to be a simple notebook that utilizes the COVID 19 dataset. Hopefully this notebook helps clarify some of the code in this notebook with comments and latex/markdown cells. 
 
 ```{r message=TRUE, warning=TRUE, include=FALSE}
 library(dplyr)
 library(ggplot2)
-library(tidyverse)
-library(janitor)
-library(gganimate)
-library(gifski)
-library(png)
-library(ggrepel)
-library(scales)
-library(gapminder)
-# library(shinyWidgets)
-library(data.table)
 ```
 
 ## Reading The Data
@@ -67,11 +54,9 @@ head(cases) #uncomment to see dataframe in RStudio
 
 ```
 
-### Melt Columns
+### Convert from running sum
 
-The next step is to melt the columns for date. A good dataset shouldn't have a column for each date. It makes more sense for us to have a row for each state and date combination. The process of taking multiple columns and converting it into two columns (one for the column name and the other for the value) is called melting. 
-
-Let's do this with the data that we have by using the melt command from the data.table library. The id is the variable we intend to keep (Province State), measure is the columns we want to melt (anything that starts with X), value is the name of the data in the table (Cases/Deaths) and variable is the name of what the column headers represent (Dates).
+The original data set provides a running sum of confirmed Covid cases in the US, i.e. it counts the total number of confirmed Covid cases up until the date recorded. I thought we would get better analysis by viewing the daily amount of recorded Covid cases for each day, which gives us a better idea of when Covid was at its worst.
 
 ```{r}
 case_delta <- cases
@@ -79,15 +64,16 @@ case_delta <- cases
 for(i in 2:ncol(cases)) {       # for-loop over columns
   
   if(i > 3) {
-    
     case_delta[ , i] = abs((cases[ , i] - cases[ , i-1]))
-    
   }
 }
 
 head(case_delta)
 
 ```
+
+
+Here, we take the sum of cases over each state so we have a total number of cases in the US for easier analysis.
 
 ```{r}
 case_delta <- colSums(case_delta[,-1])
@@ -96,12 +82,16 @@ cases_vec <- as.numeric(case_delta)
 cases_vec[1:100]
 ```
 
+Now we convert the character strings of dates provided into Date objects such that they can by manipulated mathematically later.
+
 ```{r}
 dates = names(case_delta)
 dates = as.Date(dates, format="X%m.%d.%y")
 
 head(dates)
 ```
+
+We now have a decent plot for daily confirmed cases over the past two years.
 
 ```{r}
 plot(dates, cases_vec, xlab="Time", ylab="Daily Confirmed Cases")
@@ -155,6 +145,8 @@ health <- read.csv(path_health)
 head(health)
 ```
 
+Here, we take the two important columns from our dataframe for analysis, being the date of the data point, and the opening stock price associated with that date.
+
 ```{r}
 jnj = jnj %>% select("Date" | "Open")
 jnj$Open <- parse_number(jnj$Open)
@@ -172,6 +164,9 @@ health = health %>% select("Date" | "Open")
 
 health
 ```
+
+Here, we convert our date strings inside of these dataframes into Date objects.
+
 ```{r}
 jnj$Date <- as.Date(jnj$Date, format="%m/%d/%Y")
 moderna$Date <- as.Date(moderna$Date, format="%m/%d/%Y")
@@ -184,6 +179,7 @@ health$Date <- as.Date(health$Date, format="%m/%d/%Y")
 health
 ```
 
+Now, we trim the data frames to only contain dates that are within the range of dates we are looking at for our Covid data.
 
 ```{r}
 jnj = jnj %>% filter(jnj$Date %in% dates)
@@ -196,6 +192,13 @@ health = health %>% filter(health$Date %in% dates)
 
 health
 ```
+
+## Plotting our data
+
+
+Finally, we plot all the data we've acquired so far together.
+
+We choose first to compare the stock prices of the three major vaccine companies throughout the course of Covid. We do this by plotting them together on the same graph with our confirmed cases data.
 
 ```{r}
 plot(dates, cases_vec, xlab="Time", ylab="Daily Confirmed Cases", pch=16)
@@ -259,3 +262,5 @@ legend("topleft",
 title("Health Sector Stock Prices (USD) and Confirmed Cases 2020-2022")
 ```
 
+## I Think this is all the visualization we need to do- you can just go in and analyze these charts, let me know if you have questions
+  -Sean
