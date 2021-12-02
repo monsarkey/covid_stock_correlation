@@ -29,6 +29,7 @@ recovered showing recovery from COVID 19 details.
 (https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_time_series) 
 
 COVID 19 has affected everyone around the globe, and it still remains to be a major playing factor in everyone's lives.
+We interact and are involved with many industries throughout our lives 
 
 
 ```{r message=TRUE, warning=TRUE, include=FALSE}
