@@ -10,7 +10,9 @@ output:
 ---
 # Introduction to a simple COVID data exploration based on different industries 
 
-This notebook specifically is designed to be a 
+This notebook specifically is designed to be a simple notebook that emphasizes and explains by the utilization
+of the COVID 19 datset on the different sectors/industries. This notebook will introduce the datasets of COVID 19
+data exploration on 
 
 
 ```{r message=TRUE, warning=TRUE, include=FALSE}
