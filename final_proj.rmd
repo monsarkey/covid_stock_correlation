@@ -8,7 +8,9 @@ output:
   pdf_document:
     toc: yes
 ---
-# Simple 
+# Introduction to a simple COVID data exploration based on different industries and time series summaries
+
+
 ```{r message=TRUE, warning=TRUE, include=FALSE}
 library(dplyr)
 library(ggplot2)
