@@ -1,6 +1,6 @@
 ---
 title: "The Effect of Covid on Different Industries (STAT400)"
-author: "Sean Markey (116035729), Herman Mann (118420943), "
+author: "Sean Markey (116035729), Herman Mann (118420943), Lucas Ng (115862029)"
 output:
   html_document:
     number_sections: yes
@@ -27,9 +27,6 @@ series summary tables which includes the confirmed people having COVID 19, death
 recovered showing recovery from COVID 19 details.
 # COVID-19 US time series dataset:
 (https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_time_series) 
-
-COVID 19 has affected everyone around the globe, and it still remains to be a major playing factor in everyone's lives.
-We interact and are involved with many industries throughout our lives 
 
 
 ```{r message=TRUE, warning=TRUE, include=FALSE}
@@ -202,9 +199,6 @@ health$Date <- as.Date(health$Date, format="%m/%d/%Y")
 
 health
 ```
-
-Now, we trim the data frames to only contain dates that are within the range of dates we are looking at for our Covid data.
-
 ```{r}
 Cases <- c(cases_vec)
 Date <- c(dates)
@@ -212,6 +206,9 @@ Date <- c(dates)
 df <- data.frame(Date, Cases)
 print(df)
 ```
+We create a new dataframe that includes only COVID cases and their associated dates.
+
+Now, we trim the data frames to only contain dates that are within the range of dates we are looking at for our Covid data.
 
 ```{r}
 jnj = jnj %>% filter(jnj$Date %in% dates)
@@ -225,7 +222,6 @@ df = df %>% filter(df$Date %in% energy$Date)
 df = df %>% arrange(desc(df$Date))
 print(df)
 ```
-
 ## Plotting our data
 
 
@@ -235,7 +231,7 @@ Finally, we plot all the data we've acquired so far together.
 plot(df$Date, df$Cases, xlab="Time", ylab="Daily Confirmed Cases")
 title("Daily Confirmed Covid Cases from 2020 to 2022")
 ```
-Before we start, here is the adjusted COVID case plot over time matched with the associated stock price dates (this is because stocks opening prices are measured only 5 days a week).
+Before we start, here is the adjusted COVID case plot over time matched with the associated stock price dates (this is because stocks opening prices are measured only 5 days a week, while COVID data was originally taken for all 7 days).
 
 We choose first to compare the stock prices of the three major vaccine companies throughout the course of Covid. We do this by plotting them together on the same graph with our confirmed cases data.
 
