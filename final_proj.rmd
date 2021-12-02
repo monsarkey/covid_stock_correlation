@@ -8,7 +8,9 @@ output:
   pdf_document:
     toc: yes
 ---
-# Introduction to a simple COVID data exploration based on different industries and time series summaries
+# Introduction to a simple COVID data exploration based on different industries 
+
+This notebook specifically is designed to be a 
 
 
 ```{r message=TRUE, warning=TRUE, include=FALSE}
