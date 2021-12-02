@@ -103,10 +103,106 @@ dates = as.Date(dates, format="X%m.%d.%y")
 head(dates)
 ```
 
-
 ```{r}
 plot(dates, cases_vec, xlab="Time", ylab="Daily Confirmed Cases")
 title("Daily Confirmed Covid Cases from 2020 to 2022")
 ```
 
 Now that we have our Covid cases over time correctly charted, we must get some stock data to compare such that we can draw comparisons between daily cases and the values of certain stocks. 
+
+## Reading The Data
+
+To read the data we need to provide the paths to the csv files that we will use. Specifically, we want:
+
+* Johnson & Johnson Stock Prices - historical_JNJ.csv
+* Moderna Stock Prices - historical_MRNA.csv
+* Pfizer Stock Prices - historical_PFE.csv
+* Energy Select Sector Stock Prices - historical_XLE.csv
+* Technology Select Sector Stock Prices - historical_XLK.csv
+* Consumer Product Select Sector Stock Prices - historical_XLP.csv
+* Health Care Select Sector Stock Prices - historical_XLK.csv
+
+The paths below are relative; the "./" translates to current directory so if you are running this code you would want your file structure to look like this
+
+* parent_dir
+  * final_proj.rmd
+  * data Directory
+    * historical_JNJ.csv
+    * historical_MRNA.csv
+    * historical_PFE.csv
+    * historical_XLE.csv
+    * historical_XLK.csv
+    * historical_XLP.csv
+    * historical_XLV.csv
+    
+```{r}
+path_jnj <- "./data/historical_JNJ.csv"
+path_moderna <- "./data/historical_MRNA.csv"
+path_pfizer <- "./data/historical_PFE.csv"
+path_energy <- "./data/historical_XLE.csv"
+path_tech <- "./data/historical_XLK.csv"
+path_consumer <- "./data/historical_XLP.csv"
+path_health <- "./data/historical_XLV.csv"
+
+jnj <- read.csv(path_jnj)
+moderna <- read.csv(path_moderna)
+pfizer <- read.csv(path_pfizer)
+energy <- read.csv(path_energy)
+tech <- read.csv(path_tech)
+consumer <- read.csv(path_consumer)
+health <- read.csv(path_health)
+
+head(health)
+```
+
+```{r}
+jnj = jnj %>% select("Date" | "Open")
+jnj$Open <- parse_number(jnj$Open)
+
+moderna = moderna %>% select("Date" | "Open")
+moderna$Open <- parse_number(moderna$Open)
+
+pfizer = pfizer %>% select("Date" | "Open")
+pfizer$Open <- parse_number(pfizer$Open)
+
+energy = energy %>% select("Date" | "Open")
+tech = tech %>% select("Date" | "Open")
+consumer = consumer %>% select("Date" | "Open")
+health = health %>% select("Date" | "Open")
+
+health
+```
+```{r}
+jnj$Date <- as.Date(jnj$Date, format="%m/%d/%Y")
+moderna$Date <- as.Date(moderna$Date, format="%m/%d/%Y")
+pfizer$Date <- as.Date(pfizer$Date, format="%m/%d/%Y")
+energy$Date <- as.Date(energy$Date, format="%m/%d/%Y")
+tech$Date <- as.Date(tech$Date, format="%m/%d/%Y")
+consumer$Date <- as.Date(consumer$Date, format="%m/%d/%Y")
+health$Date <- as.Date(health$Date, format="%m/%d/%Y")
+
+health
+```
+
+
+```{r}
+jnj = jnj %>% filter(jnj$Date %in% dates)
+moderna = moderna %>% filter(moderna$Date %in% dates)
+pfizer = pfizer %>% filter(pfizer$Date %in% dates)
+energy = energy %>% filter(energy$Date %in% dates)
+tech = tech %>% filter(tech$Date %in% dates)
+consumer = consumer %>% filter(consumer$Date %in% dates)
+health = health %>% filter(health$Date %in% dates)
+
+health
+```
+
+```{r}
+plot(dates, cases_vec, xlab="Time", ylab="Daily Confirmed Cases", pch=16)
+par(new=T)
+plot(pfizer$Date, pfizer$Open, type='l', col='red3', axes=F, xlab=NA, ylab=NA)
+par(new=T)
+plot(jnj$Date, jnj$Open, type='l', col='green1', axes=F, xlab=NA, ylab=NA)
+axis(side=4)
+```
+
