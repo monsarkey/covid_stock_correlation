@@ -1,6 +1,6 @@
 ---
 title: "The Effect of Covid on Different Industries (STAT400)"
-author: "Sean Markey (116035729), Herman Mann (118420943), Lucas Ng (115862029)"
+author: "Sean Markey (116035729), Herman Mann (118420943), Lucas Ng (115862029), Oliver Wu (116510080), "
 output:
   html_document:
     number_sections: yes
@@ -8,12 +8,20 @@ output:
   pdf_document:
     toc: yes
 ---
-# Introduction to a simple COVID data exploration based on different industries 
+# Introduction to a COVID-19 data exploration based on different industries 
 
 This notebook specifically is designed to be a simple notebook that emphasizes and explains by the 
-utilization of the COVID 19 datset on the different sectors/industries on the changes the specific 
-industries/sectors went through specifically focusing on transportation, technology, health care, 
-vaccines, mail being affected/and or unaffected by COVID 19 and COVID 19 related economic issues:
+utilization of the COVID 19 data set and NASDAQ historical data the effect of Covid-19 on stock prices of the
+three vaccine companies (Moderna, Johnson & Johnson, and Pfizer) as well as some of the largest sectors in
+the U.S (Energy, Tech, Consumer Staples, and Health)
+
+We will focus on asking whether or not Covid-19 had a significant effect on the stock prices of these companies/sectors as well as seeing how the stock prices compare today to pre-pandemic.
+
+Our initial thoughts are the following:
+For the three vaccine companies, they will likely all increase in stock price throughout the pandemic era from 2020 to present day and will have shown the highest increase in stock price at the first major surge of Covid-19 Cases.
+
+For the sectors: Energy will have an increase moderate increase in stock price due to the great majority of the population staying at home due to quarantine, however will also be tampered by the lack of transportation and office space used as well. Tech will have a large increase in stock price due to consumers needing new technology in their homes to account for a virtual era such as webcams, computers, microphones etc. Consumer Staples will show the largest increase in stock prices due to the quarantine and consumers needing to buy larger quantities of goods to avoid frequent trips outside. Finally, Health will show the second largest increase in stock prices as the main focus during the pandemic era was to find ways to test for Covid-19 and ways to immunize against it.
+
 
 # Historical data for specific sectors and industries:
 (https://www.nasdaq.com/market-activity/quotes/historical)
