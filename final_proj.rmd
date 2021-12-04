@@ -305,8 +305,6 @@ legend("topleft",
 title("Health Sector Stock Prices (USD) and Confirmed Cases 2020-2022")
 ```
 
-### Conclusion
-
 ```{r}
 cor(df$Cases, consumer$Open)
 cor(df$Cases, energy$Open)
