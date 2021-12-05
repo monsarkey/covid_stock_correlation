@@ -56,7 +56,7 @@ The paths below are relative; the "./" translates to current directory so if you
   * data Directory
     * time_series_covid19_confirmed_US.csv
     
-```{r}
+```{r, results='hide'}
 path_US_confirmed <- "./data/time_series_covid19_confirmed_US.csv"
 
 cases <- read.csv(path_US_confirmed)
@@ -65,7 +65,7 @@ head(cases)
 ### Filter Columns
 Let's first filter the data to only include the relevant columns. The select command allows us to filter on select columns. Let's make a simplifying assumption that we are only concerned with data per state over time. For this we would need only the Province_State column and columns that start with the letter X (for dates).
 
-```{R}
+```{r, results='hide'}
 cases = cases %>% select("Province_State" | starts_with("X"))
 head(cases)
 
@@ -77,7 +77,7 @@ Now that we have dropped all unnecessary features, the next issue is that we hav
 
 The group_by function groups a dataframe by a specific variable (in our case Province_State) and the summarize function aggregates all columns starting with an X.
 
-```{r}
+```{r, results='hide'}
 cases = cases %>% group_by(Province_State) %>% summarise(across(starts_with("X"), sum))
 head(cases) #uncomment to see dataframe in RStudio
 
@@ -87,7 +87,7 @@ head(cases) #uncomment to see dataframe in RStudio
 
 The original data set provides a running sum of confirmed Covid cases in the US, i.e. it counts the total number of confirmed Covid cases up until the date recorded. I thought we would get better analysis by viewing the daily amount of recorded Covid cases for each day, which gives us a better idea of when Covid was at its worst.
 
-```{r}
+```{r, results='hide'}
 case_delta <- cases
 
 for(i in 2:ncol(cases)) {       # for-loop over columns
@@ -104,7 +104,7 @@ head(case_delta)
 
 Here, we take the sum of cases over each state so we have a total number of cases in the US for easier analysis.
 
-```{r}
+```{r, results='hide'}
 case_delta <- colSums(case_delta[,-1])
 
 cases_vec <- as.numeric(case_delta)
@@ -113,7 +113,7 @@ cases_vec[1:100]
 
 Now we convert the character strings of dates provided into Date objects such that they can by manipulated mathematically later.
 
-```{r}
+```{r, results='hide'}
 dates = names(case_delta)
 dates = as.Date(dates, format="X%m.%d.%y")
 
@@ -154,7 +154,7 @@ The paths below are relative; the "./" translates to current directory so if you
     * historical_XLP.csv
     * historical_XLV.csv
     
-```{r}
+```{r, results='hide'}
 path_jnj <- "./data/historical_JNJ.csv"
 path_moderna <- "./data/historical_MRNA.csv"
 path_pfizer <- "./data/historical_PFE.csv"
@@ -176,7 +176,7 @@ head(health)
 
 Here, we take the two important columns from our dataframe for analysis, being the date of the data point, and the opening stock price associated with that date.
 
-```{r}
+```{r, results='hide'}
 jnj = jnj %>% select("Date" | "Open")
 jnj$Open <- parse_number(jnj$Open)
 
@@ -196,7 +196,7 @@ health
 
 Here, we convert our date strings inside of these dataframes into Date objects.
 
-```{r}
+```{r, results='hide'}
 jnj$Date <- as.Date(jnj$Date, format="%m/%d/%Y")
 moderna$Date <- as.Date(moderna$Date, format="%m/%d/%Y")
 pfizer$Date <- as.Date(pfizer$Date, format="%m/%d/%Y")
@@ -207,7 +207,7 @@ health$Date <- as.Date(health$Date, format="%m/%d/%Y")
 
 health
 ```
-```{r}
+```{r, results='hide'}
 Cases <- c(cases_vec)
 Date <- c(dates)
 
@@ -218,7 +218,7 @@ We create a new dataframe that includes only COVID cases and their associated da
 
 Now, we trim the data frames to only contain dates that are within the range of dates we are looking at for our Covid data.
 
-```{r}
+```{r, results='hide'}
 jnj = jnj %>% filter(jnj$Date %in% dates)
 moderna = moderna %>% filter(moderna$Date %in% dates)
 pfizer = pfizer %>% filter(pfizer$Date %in% dates)
